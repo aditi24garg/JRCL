@@ -41,9 +41,12 @@ with output_col:
             stock_diameter=stock["stock_diameter"]
             requirements=stock["requirements"]
             st.subheader(f"Stock Type {idx+1}: Length {stock_length}m, Diameter {stock_diameter}mm")
-            result=process_stock(stock_length,requirements)
+            result=process_stock(stock_length,requirements,diameter=stock_diameter)
             st.markdown(f"**Total Bars to Order:** {result['bars_used']}")
             st.markdown(f"**Total Waste:** {result['total_waste']:.2f} meters")
+            st.markdown(f"**Total Weight Used:** {result['total_weight_used']:.2f} kg")
+            st.markdown(f"**Total Weight Wasted:** {result['total_weight_wasted']:.2f} kg")
+            st.markdown(f"**Percentage Weight Loss due to Waste:** {result['percent_loss']:.2f}%")
             if result['bars_used']>0:
                 st.markdown(f"**Average Waste per Bar:** {result['average_waste']:.2f} meters")
             if result['reusable_waste']>0:

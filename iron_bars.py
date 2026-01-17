@@ -41,6 +41,9 @@ def process_stock(stock_length, requirement):
   total_weight_used = 0
   total_weight_wasted = 0
 
+  # get weight per meter
+  weight_per_m = weight_per_meter.get(diameter, 0) if diameter else 0
+
   tmp_pieces = pieces_left.copy()
   while tmp_pieces:
     bar_fill = 0
@@ -61,7 +64,6 @@ def process_stock(stock_length, requirement):
     bars_cut_plan.append(cut_this_bar)
 
     # weight calculation
-    weight_per_m = weight_per_meter.get(diameter, 0)
     total_weight_used += bar_fill * weight_per_m
     total_weight_wasted += waste * weight_per_m
 
@@ -71,6 +73,7 @@ def process_stock(stock_length, requirement):
       waste=stock_length-sum(plan)
       if waste>=1:
         reusable_waste+=count*waste
+  percent_loss = (total_weight_wasted / (total_weight_used + total_weight_wasted) * 100) if (total_weight_used + total_weight_wasted) > 0 else 0  
   return{
 "bars_used":bars_used,
 "total_waste":total_waste,
@@ -80,7 +83,8 @@ def process_stock(stock_length, requirement):
 "reusable_waste":reusable_waste,
 "unfulfilled_pieces": len(tmp_pieces),
 "total_weight_used": total_weight_used,
-"total_weight_wasted": total_weight_wasted
+"total_weight_wasted": total_weight_wasted,
+"percent_loss": percent_loss
 }
 for stock_key,req in requirements.items():
   stock_length = stock_key[0]
