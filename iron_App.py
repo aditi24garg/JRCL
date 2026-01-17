@@ -8,7 +8,7 @@ input_col,output_col=st.columns(2)
 
 with input_col:
   st.header("Input Requirements")
-  client_name=st.text_input("Client Name","ABC Constructions")
+  client_name=st.text_input("Client Name")
   req_count = int(st.number_input("How many different stock types do you have?", min_value=1, value=1, step=1))
   stock_requirements=[]
   for i in range(req_count):
@@ -24,10 +24,10 @@ with input_col:
     for j in range(piece_count):
       pcol1,pcol2=st.columns(2)
       with pcol1:
-        length=st.number_input(f"Required Length (meters) for piece {j+1} of stock type {i+1}",min_value=0.01,value=1.0,step=0.01,key=f"len_{i}_{j}")
+        length=st.number_input(f"Length #{j+1}(m) of stock type #{i+1}",min_value=0.01,value=1.0,step=0.01,key=f"len_{i}_{j}")
       with pcol2:
         qty = st.number_input(f"Quantity for piece {j+1} of stock type {i+1}",min_value=1,value=1,step=1,key=f"qty_{i}_{j}")
-        requirements.append((length,qty))
+      requirements.append((length,qty))
     stock_requirements.append({"stock_length":stock_length,
                               "stock_diameter":stock_diameter,
                               "requirements":requirements}) 
