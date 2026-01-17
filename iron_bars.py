@@ -83,7 +83,7 @@ def process_stock(stock_length, requirement,diameter=None):
       waste=stock_length-sum(plan)
       if waste>=1:
         reusable_waste+=count*waste
-  percent_loss = (total_weight_wasted / (total_weight_used + total_weight_wasted) * 100) if (total_weight_used + total_weight_wasted) > 0 else 0  
+  percent_loss = (total_weight_wasted / total_weight_used) * 100 if total_weight_used > 0 else 0  
   return{
 "bars_used":bars_used,
 "total_waste":total_waste,

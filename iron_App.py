@@ -1,5 +1,11 @@
 import streamlit as st
 from iron_bars import  process_stock
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+import io
+
 st.set_page_config(layout="wide")
 st.title("JRCL's Iron Bar Cutting Optimization Tool")
 st.write("Optimize the cutting of iron bars to minimize waste based on your requirements.") 
@@ -51,10 +57,10 @@ with output_col:
             
             st.markdown(f"**Total Weight Wasted:** {result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Percentage Weight Loss due to Waste:** {result['percent_loss']:.2f}%")
-            if result['bars_used']>0:
-                st.markdown(f"**Average Waste per Bar:** {result['average_waste']:.2f} meters")
-            if result['reusable_waste']>0:
-                st.markdown(f"**Out of total waste, {result['reusable_waste']:.2f} meters can be reused (waste >= 1m from individual bars).**")
+            #if result['bars_used']>0:
+               # st.markdown(f"**Average Waste per Bar:** {result['average_waste']:.2f} meters")
+            #if result['reusable_waste']>0:
+                #st.markdown(f"**Out of total waste, {result['reusable_waste']:.2f} meters can be reused (waste >= 1m from individual bars).**")
             st.markdown("**Cutting Plans: for each bar (grouped):**")
             for plan, count in result['plan_counter'].items():
                 cuts_str = ", ".join(f"{cut:.2f}" for cut in plan)
