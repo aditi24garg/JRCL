@@ -1,5 +1,6 @@
 import streamlit as st
 from iron_bars import  process_stock
+from pdf_report import generate_pdf_report
 
 st.set_page_config(layout="wide")
 st.title("JRCL's Iron Bar Cutting Optimization Tool")
@@ -43,8 +44,18 @@ with output_col:
             stock_diameter=stock["stock_diameter"]
             requirements=stock["requirements"]
             st.subheader(f"Stock Type {idx+1}: Length {stock_length}m, Diameter {stock_diameter}mm")
-            print(stock_diameter)
+            pdf_data=[]
+
             result=process_stock(stock_length,requirements,diameter=stock_diameter)
+            pdf_data.append(result)
+            pdf_buffer = generate_pdf_report(client_name, stock_requirements, pdf_data)
+            st.download_button(
+               label="Download PDF Report",
+               data=pdf_buffer,
+               file_name=f"{client_name}_iron_report.pdf",
+               mime="application/pdf"
+               )
+
             st.markdown(f"**No. of Bars to Order:** {result['bars_used']}")
             st.markdown(f"**Total Weight of Bars:** {result['total_weight_used'] + result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Utilized Weight:** {result['total_weight_used']:.2f} kg")
@@ -63,3 +74,6 @@ with output_col:
                 st.write(f"- {count} bar(s): [{cuts_str}] | Waste: {waste:.2f} m")
             if result['unfulfilled_pieces']>0:
                st.warning(f"Unfulfilled pieces: {result['unfulfilled_pieces']} (cannot fit in bars)")
+
+            
+
