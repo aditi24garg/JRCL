@@ -30,7 +30,8 @@ with input_col:
       requirements.append((length,qty))
     stock_requirements.append({"stock_length":stock_length,
                               "stock_diameter":stock_diameter,
-                              "requirements":requirements}) 
+                              "requirements":requirements})
+    print(stock_requirements) 
 optimize_button=st.button("Optimize Cutting Plan")
 with output_col:
     st.header("Optimization Results")
@@ -41,10 +42,13 @@ with output_col:
             stock_diameter=stock["stock_diameter"]
             requirements=stock["requirements"]
             st.subheader(f"Stock Type {idx+1}: Length {stock_length}m, Diameter {stock_diameter}mm")
+            print(stock_diameter)
             result=process_stock(stock_length,requirements,diameter=stock_diameter)
-            st.markdown(f"**Total Bars to Order:** {result['bars_used']}")
-            st.markdown(f"**Total Waste:** {result['total_waste']:.2f} meters")
-            st.markdown(f"**Total Weight Used:** {result['total_weight_used']:.2f} kg")
+            st.markdown(f"**No. of Bars to Order:** {result['bars_used']}")
+            st.markdown(f"**Total Weight of Bars:** {result['total_weight_used'] + result['total_weight_wasted']:.2f} kg")
+            st.markdown(f"**Utilized Weight:** {result['total_weight_used']:.2f} kg")
+            st.markdown(f"**Total Waste in metre:** {result['total_waste']:.2f} meters")
+            
             st.markdown(f"**Total Weight Wasted:** {result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Percentage Weight Loss due to Waste:** {result['percent_loss']:.2f}%")
             if result['bars_used']>0:

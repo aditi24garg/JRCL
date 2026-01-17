@@ -42,7 +42,17 @@ def process_stock(stock_length, requirement,diameter=None):
   total_weight_wasted = 0
 
   # get weight per meter
-  weight_per_m = weight_per_meter.get(diameter, 0) if diameter else 0
+  if diameter:
+    print(f"Processing for diameter: {diameter}")
+    key = f"{diameter} mm"
+    print(f"Looking up weight for key: {key}")
+    weight_per_m = weight_per_meter.get(key, 0)
+    print(weight_per_m)
+    
+  else:
+    weight_per_m = 0
+
+  print(f"Weight per meter for diameter {diameter}: {weight_per_m} kg/m")
 
   tmp_pieces = pieces_left.copy()
   while tmp_pieces:
@@ -90,9 +100,13 @@ for stock_key,req in requirements.items():
   stock_length = stock_key[0]
   diameter = bar_diameters.get(stock_key,"N/A")
   print(f"\n==Stock Length:{stock_length}m (Diameter:{diameter})===")
-  result=process_stock(stock_length,req)
+  result=process_stock(stock_length,req,diameter=diameter)
   print(f"Total number of bars to order: {result['bars_used']}")
   print(f"Total Waste:{result['total_waste']:2f}meters")
+  print(f"Total Weight Used:{result['total_weight_used']:2f} kg")
+  print(f"Total Weight Wasted:{result['total_weight_wasted']:2f} kg")
+  print(f"Percentage Weight Loss due to Waste:{result['percent_loss']:2f}%")
+
   if result['bars_used']>0:
     print(f"Average wastage per bar:{result['average_waste']:2f}meters")
   if result['reusable_waste']>0:
