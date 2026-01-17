@@ -1,7 +1,7 @@
 import streamlit as st
 from iron_bars import  process_stock
 st.set_page_config(layout="wide")
-st.title("Iron Bar Cutting Optimization")
+st.title("JRCL's Iron Bar Cutting Optimization Tool")
 st.write("Optimize the cutting of iron bars to minimize waste based on your requirements.") 
 
 input_col,output_col=st.columns(2)
