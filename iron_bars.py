@@ -56,7 +56,8 @@ def process_stock(stock_length, requirement):
     for idx in reversed(used_pieces):
       tmp_pieces.pop(idx)
     bars_used+=1
-    total_waste+=stock_length-bar_fill
+    waste=stock_length-bar_fill
+    total_waste+=waste
     bars_cut_plan.append(cut_this_bar)
 
     # weight calculation
