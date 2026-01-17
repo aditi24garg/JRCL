@@ -1,10 +1,5 @@
 import streamlit as st
 from iron_bars import  process_stock
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import inch
-import io
 
 st.set_page_config(layout="wide")
 st.title("JRCL's Iron Bar Cutting Optimization Tool")
