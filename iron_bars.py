@@ -18,6 +18,18 @@ requirements={
        ]
        }
 
+weight_per_meter = {
+    "8 mm": 0.40,
+    "10 mm": 0.62,
+    "12 mm": 0.89,
+    "16 mm": 1.58,
+    "20 mm": 2.47,
+    "25 mm": 3.86,
+    "32 mm": 6.32,
+    "36 mm": 8,
+    "40 mm": 9.88
+}
+
 def process_stock(stock_length, requirement):
   pieces_left=[]
   for bar_length, count in requirement:
@@ -26,6 +38,8 @@ def process_stock(stock_length, requirement):
   bars_used=0
   total_waste=0
   bars_cut_plan=[]
+  total_weight_used = 0
+  total_weight_wasted = 0
 
   tmp_pieces = pieces_left.copy()
   while tmp_pieces:
@@ -44,6 +58,12 @@ def process_stock(stock_length, requirement):
     bars_used+=1
     total_waste+=stock_length-bar_fill
     bars_cut_plan.append(cut_this_bar)
+
+    # weight calculation
+    weight_per_m = weight_per_meter.get(diameter, 0)
+    total_weight_used += bar_fill * weight_per_m
+    total_weight_wasted += waste * weight_per_m
+
     plan_counter = Counter(tuple(sorted(cuts, reverse=True)) for cuts in bars_cut_plan)
     reusable_waste=0
     for plan, count in plan_counter.items():
@@ -57,7 +77,9 @@ def process_stock(stock_length, requirement):
 "plan_counter":plan_counter,
 "stock_length":stock_length,
 "reusable_waste":reusable_waste,
-"unfulfilled_pieces": len(tmp_pieces)
+"unfulfilled_pieces": len(tmp_pieces),
+"total_weight_used": total_weight_used,
+"total_weight_wasted": total_weight_wasted
 }
 for stock_key,req in requirements.items():
   stock_length = stock_key[0]
