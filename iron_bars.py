@@ -30,7 +30,7 @@ weight_per_meter = {
     "40 mm": 9.88
 }
 
-def process_stock(stock_length, requirement):
+def process_stock(stock_length, requirement,diameter=None):
   pieces_left=[]
   for bar_length, count in requirement:
     pieces_left.extend([bar_length]*count)
