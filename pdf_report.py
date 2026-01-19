@@ -16,60 +16,68 @@ def generate_pdf_report(client_name, stock_requirements, results):
     pdf.cell(0, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True)
     pdf.ln(5)
 
-    # Table 1: User Input
-    pdf.set_font("Helvetica", "B", 14)
-    pdf.cell(0, 8, "User Input", ln=True)
-    pdf.set_font("Helvetica", "B", 12)
-    pdf.cell(40, 8, "Diameter", border=1)
-    pdf.cell(40, 8, "Length (m)", border=1)
-    pdf.cell(50, 8, "No. of Pieces", border=1)
+    start_y = pdf.get_y()
+    left_x = 10
+    right_x = 110   # Adjust if needed
+
+    # ---------------- LEFT: USER INPUT ----------------
+    pdf.set_xy(left_x, start_y)
+    pdf.set_font("Helvetica", "B", 13)
+    pdf.cell(90, 8, "User Input", ln=True)
+
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.set_x(left_x)
+    pdf.cell(30, 8, "Diameter", border=1)
+    pdf.cell(30, 8, "Length", border=1)
+    pdf.cell(30, 8, "Qty", border=1)
     pdf.ln()
-    pdf.set_font("Helvetica", "", 12)
+
+    pdf.set_font("Helvetica", "", 11)
+
+    left_table_y = pdf.get_y()
+
     for stock in stock_requirements:
         diameter = f"{stock['stock_diameter']} mm"
         for length, qty in stock["requirements"]:
-            pdf.cell(40, 8, str(diameter), border=1)
-            pdf.cell(40, 8, f"{length:.2f}", border=1)
-            pdf.cell(50, 8, str(qty), border=1)
+            pdf.set_x(left_x)
+            pdf.cell(30, 8, diameter, border=1)
+            pdf.cell(30, 8, f"{length:.2f}", border=1)
+            pdf.cell(30, 8, str(qty), border=1)
             pdf.ln()
-    pdf.ln(5)
 
-    # Table 2: Output Summary
-    pdf.set_font("Helvetica", "B", 14)
-    pdf.cell(0, 8, "Optimization Summary", ln=True)
+    # ---------------- RIGHT: OPTIMIZATION SUMMARY ----------------
+    pdf.set_xy(right_x, start_y)
+    pdf.set_font("Helvetica", "B", 13)
+    pdf.cell(90, 8, "Optimization Summary", ln=True)
+
     for idx, stock in enumerate(stock_requirements):
-        diameter = f"{stock['stock_diameter']} mm"
         result = results[idx]
-        pdf.set_font("Helvetica", "B", 12)
-        pdf.cell(0, 8, f"Stock Type {idx+1}: Diameter {diameter}", ln=True)
-        pdf.set_font("Helvetica", "", 12)
+        diameter = f"{stock['stock_diameter']} mm"
 
-        pdf.cell(80, 8, "Optimization Plan", border=1)
-        pdf.cell(40, 8, "Value", border=1)
-        pdf.ln()
+        pdf.set_x(right_x)
+        pdf.set_font("Helvetica", "B", 11)
+        pdf.cell(90, 8, f"Stock {idx+1} - {diameter}", ln=True)
 
-        pdf.cell(80, 8, "No. of Bars", border=1)
-        pdf.cell(40, 8, str(result['bars_used']), border=1)
-        pdf.ln()
+        pdf.set_font("Helvetica", "", 11)
 
-        pdf.cell(80, 8, "Total Weight", border=1)
-        pdf.cell(40, 8, f"{result['total_weight_used'] + result['total_weight_wasted']:.2f} kg", border=1)
-        pdf.ln()
+        rows = [
+            ("No. of Bars", result['bars_used']),
+            ("Total Weight", f"{result['total_weight_used'] + result['total_weight_wasted']:.2f} kg"),
+            ("Utilized Weight", f"{result['total_weight_used']:.2f} kg"),
+            ("Wasted Weight", f"{result['total_weight_wasted']:.2f} kg"),
+            ("Loss %", f"{result['percent_loss']:.2f}%")
+        ]
 
-        pdf.cell(80, 8, "Utilized Weight", border=1)
-        pdf.cell(40, 8, f"{result['total_weight_used']:.2f} kg", border=1)
-        pdf.ln()
+        for label, value in rows:
+            pdf.set_x(right_x)
+            pdf.cell(50, 8, label, border=1)
+            pdf.cell(40, 8, str(value), border=1)
+            pdf.ln()
 
-        pdf.cell(80, 8, "Wasted Weight", border=1)
-        pdf.cell(40, 8, f"{result['total_weight_wasted']:.2f} kg", border=1)
-        pdf.ln()
+        pdf.ln(4)
 
-        pdf.cell(80, 8, "Percentage Loss", border=1)
-        pdf.cell(40, 8, f"{result['percent_loss']:.2f} %", border=1)
-        pdf.ln(10)
-
-    # Save PDF as string (fpdf returns bytes in Latin-1)
-    pdf_str = pdf.output(dest='S').encode('latin1')  # <--- key fix
+    # Output
+    pdf_str = pdf.output(dest='S').encode('latin1')
     pdf_buffer = BytesIO(pdf_str)
     pdf_buffer.seek(0)
     return pdf_buffer

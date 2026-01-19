@@ -13,6 +13,7 @@ with input_col:
   client_name=st.text_input("Client Name")
   req_count = int(st.number_input("How many different stock types do you have?", min_value=1, value=1, step=1))
   stock_requirements=[]
+  pdf_data=[]
   for i in range(req_count):
     st.markdown(f"**Stock Type {i+1}**")
     col1,col2=st.columns(2)
@@ -35,45 +36,46 @@ with input_col:
                               "requirements":requirements})
     print(stock_requirements) 
 optimize_button=st.button("Optimize Cutting Plan")
+
 with output_col:
     st.header("Optimization Results")
+    
     if optimize_button:
         st.subheader(f"Cutting Plan for {client_name}")
-        for idx,stock in enumerate(stock_requirements):
-            stock_length=stock["stock_length"]
-            stock_diameter=stock["stock_diameter"]
-            requirements=stock["requirements"]
-            st.subheader(f"Stock Type {idx+1}: Length {stock_length}m, Diameter {stock_diameter}mm")
-            pdf_data=[]
+        results = []
 
-            result=process_stock(stock_length,requirements,diameter=stock_diameter)
-            pdf_data.append(result)
+        for idx, stock in enumerate(stock_requirements):
+            stock_length = stock["stock_length"]
+            stock_diameter = stock["stock_diameter"]
+            requirements = stock["requirements"]
+
+            st.subheader(f"Stock Type {idx+1}: Length {stock_length}m, Diameter {stock_diameter}mm")
+
+            result = process_stock(stock_length, requirements, diameter=stock_diameter)
+            results.append(result)
 
             st.markdown(f"**No. of Bars to Order:** {result['bars_used']}")
             st.markdown(f"**Total Weight of Bars:** {result['total_weight_used'] + result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Utilized Weight:** {result['total_weight_used']:.2f} kg")
             st.markdown(f"**Total Waste in metre:** {result['total_waste']:.2f} meters")
-            
             st.markdown(f"**Total Weight Wasted:** {result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Percentage Weight Loss due to Waste:** {result['percent_loss']:.2f}%")
-            #if result['bars_used']>0:
-               # st.markdown(f"**Average Waste per Bar:** {result['average_waste']:.2f} meters")
-            #if result['reusable_waste']>0:
-                #st.markdown(f"**Out of total waste, {result['reusable_waste']:.2f} meters can be reused (waste >= 1m from individual bars).**")
+
             st.markdown("**Cutting Plans: for each bar (grouped):**")
             for plan, count in result['plan_counter'].items():
                 cuts_str = ", ".join(f"{cut:.2f}" for cut in plan)
                 waste = stock_length - sum(plan)
                 st.write(f"- {count} bar(s): [{cuts_str}] | Waste: {waste:.2f} m")
-            if result['unfulfilled_pieces']>0:
-               st.warning(f"Unfulfilled pieces: {result['unfulfilled_pieces']} (cannot fit in bars)")
 
-            pdf_buffer = generate_pdf_report(client_name, stock_requirements, pdf_data)
-            st.download_button(
-               label="Download PDF Report",
-               data=pdf_buffer,
-               file_name=f"{client_name}_iron_report.pdf",
-               mime="application/pdf")
-               
-            
+            if result['unfulfilled_pieces'] > 0:
+                st.warning(f"Unfulfilled pieces: {result['unfulfilled_pieces']} (cannot fit in bars)")
 
+        # Generate PDF AFTER loop
+        pdf_buffer = generate_pdf_report(client_name, stock_requirements, results)
+
+        st.download_button(
+            label="Download PDF Report",
+            data=pdf_buffer,
+            file_name=f"{client_name}_iron_report.pdf",
+            mime="application/pdf"
+        )
