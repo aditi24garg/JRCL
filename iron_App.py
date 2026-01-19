@@ -49,7 +49,7 @@ with output_col:
 
             result=process_stock(stock_length,requirements,diameter=stock_diameter)
             pdf_data.append(result)
-            pdf_buffer = generate_pdf_report(client_name, stock_requirements, pdf_data)
+            #pdf_buffer = generate_pdf_report(client_name, stock_requirements, pdf_data)
             st.download_button(
                label="Download PDF Report",
                data=pdf_buffer,
