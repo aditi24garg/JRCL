@@ -2,6 +2,7 @@ from fpdf import FPDF
 from io import BytesIO
 from datetime import datetime
 
+
 def generate_pdf_report(client_name, stock_requirements, results):
     pdf = FPDF()
     pdf.add_page()

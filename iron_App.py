@@ -1,6 +1,7 @@
 import streamlit as st
 from iron_bars import  process_stock
 from pdf_report import generate_pdf_report
+from fpdf import FPDF
 
 st.set_page_config(layout="wide")
 st.title("JRCL's Iron Bar Cutting Optimization Tool")
