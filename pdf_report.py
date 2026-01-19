@@ -11,7 +11,7 @@ def generate_pdf_report(client_name, stock_requirements, results):
     # Header
     pdf.set_font("Helvetica", "B", 16)
     pdf.cell(0, 10, "JRCL Steel Optimization Report", ln=True, align="C")
-    pdf.set_font("Arial", "", 12)
+    pdf.set_font("Helvetica", "", 12)
     pdf.cell(0, 8, f"Client Name: {client_name}", ln=True)
     pdf.cell(0, 8, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True)
     pdf.ln(5)
@@ -24,7 +24,7 @@ def generate_pdf_report(client_name, stock_requirements, results):
     pdf.cell(40, 8, "Length (m)", border=1)
     pdf.cell(50, 8, "No. of Pieces", border=1)
     pdf.ln()
-    pdf.set_font("Arial", "", 12)
+    pdf.set_font("Helvetica", "", 12)
     for stock in stock_requirements:
         diameter = f"{stock['stock_diameter']} mm"
         for length, qty in stock["requirements"]:
