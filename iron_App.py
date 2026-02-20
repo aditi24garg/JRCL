@@ -55,7 +55,7 @@ with output_col:
             result = process_stock(stock_length, requirements, diameter=stock_diameter)
             results.append(result)
 
-            st.markdown(f"**No. of Bars to Order:** {result['bars_upushingsed']}")
+            st.markdown(f"**No. of Bars to Order:** {result['bars_used']}")
             st.markdown(f"**Total Weight of Bars:** {result['total_weight_used'] + result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Utilized Weight:** {result['total_weight_used']:.2f} kg")
             st.markdown(f"**Total Waste in metre:** {result['total_waste']:.2f} meters")
