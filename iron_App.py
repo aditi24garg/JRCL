@@ -47,14 +47,15 @@ with output_col:
         for idx, stock in enumerate(stock_requirements):
             stock_length = stock["stock_length"]
             stock_diameter = stock["stock_diameter"]
-            requirements = stock["requirements"]
+            #requirements = stock["requirements"]
+            requirements = sorted(stock["requirements"], key=lambda x: x[0], reverse=True)
 
             st.subheader(f"Stock Type {idx+1}: Length {stock_length}m, Diameter {stock_diameter}mm")
 
             result = process_stock(stock_length, requirements, diameter=stock_diameter)
             results.append(result)
 
-            st.markdown(f"**No. of Bars to Order:** {result['bars_used']}")
+            st.markdown(f"**No. of Bars to Order:** {result['bars_upushingsed']}")
             st.markdown(f"**Total Weight of Bars:** {result['total_weight_used'] + result['total_weight_wasted']:.2f} kg")
             st.markdown(f"**Utilized Weight:** {result['total_weight_used']:.2f} kg")
             st.markdown(f"**Total Waste in metre:** {result['total_waste']:.2f} meters")
